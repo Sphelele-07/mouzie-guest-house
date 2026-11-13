@@ -1,0 +1,64 @@
+﻿@model Mouzie.Data.Models.ViewModels.HomeVM
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+}
+
+<!-- HERO -->
+<section class="hero-glass">
+  <div class="hero-glass-inner">
+    <div class="hero-text">
+      <img src="/images/Mouzie Logo.png" alt="Mouzie Guest House" class="hero-logo" />
+      <h1 class="hero-title">@Model.BusinessName</h1>
+      <p class="hero-tagline">@Model.Tagline</p>
+      <p class="hero-address">📍 @Model.Address</p>
+      <a asp-controller="Booking" asp-action="Create" class="btn-gold btn-lg">Book Now</a>
+    </div>
+    <div class="hero-badge-glass">
+      <span class="badge-amount">R600</span>
+      <span class="badge-label">per night</span>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS SECTION -->
+<section id="rooms" class="section section-rooms">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2>Our Rooms</h2>
+      <p>Two well-appointed rooms, designed for your comfort.</p>
+    </div>
+    <div class="room-grid-smaller">
+      @foreach (var room in Model.Rooms)
+      {
+        <article class="room-card-premium-sm">
+          <div class="room-img-wrap-sm">
+            <img src="@(room.RoomNumber == "1" ? "/images/rooms/Bedroom-01.png" : "/images/rooms/Bed-1.png")" alt="Room @room.RoomNumber" />
+          </div>
+          <div class="room-content-sm">
+            <div class="room-header">
+                <h3>Room @room.RoomNumber</h3>
+                <span class="room-price-sm">R@(room.PricePerNight.ToString("0"))</span>
+            </div>
+            <p>@room.RoomType</p>
+            <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@room.RoomId" class="btn-outline-gold btn-sm w-100">Book</a>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about" class="section section-about">
+  <div class="section-inner about-grid">
+    <div class="about-text text-center">
+      <h2>About Mouzie Guest House</h2>
+      <p>A clean, affordable and professional guest house located in the heart of Langa, Cape Town. Whether you're here for business, leisure or a short stay, we provide a peaceful and welcoming space.</p>
+      <p>We are committed to making your stay as comfortable as possible, with a focus on warm hospitality and attention to detail.</p>
+    </div>
+    <div class="about-img-wrap">
+      <img src="/images/rooms/Bedroom-01.png" alt="Mouzie Interior" />
+    </div>
+  </div>
+</section>

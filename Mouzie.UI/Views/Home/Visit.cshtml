@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Visit Us";
+    Layout = "_Layout";
+}
+
+<section class="full-page-glass">
+  <div class="glass-content-card text-center">
+    <h1 class="glass-title">Visit Us</h1>
+    <p class="glass-text">We are located just a short trip away from the KwaLanga Train Station.</p>
+    
+    <div class="map-glass-container mt-4">
+        <div class="map-placeholder">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8942e" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <p class="mt-2">KwaLanga Train Station<br/>Langa, Cape Town</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn-outline-gold">Back to Home →</a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,150 @@
+﻿@model Mouzie.Data.Models.ViewModels.AdminDashboardVM
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+
+@functions {
+    public DateTime GetSaTime(DateTime utcTime)
+    {
+        try {
+            var saZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcTime, DateTimeKind.Utc), saZone);
+        } catch { return utcTime.AddHours(2); }
+    }
+}
+
+<div class="page-header">
+  <h1>Welcome Back, Ta Shoes</h1>
+  <p style="color: #666;">Here is your business at a glance.</p>
+</div>
+
+<!-- COUNTERS -->
+<div class="dashboard-grid">
+  <div class="counter-card">
+    <h3>@Model.PendingBookings</h3>
+    <p>Pending</p>
+  </div>
+  <div class="counter-card">
+    <h3>@Model.RoomsOccupied / @Model.TotalRooms</h3>
+    <p>Rooms Occupied</p>
+  </div>
+  <div class="counter-card">
+    <h3>@Model.TodayCheckIns</h3>
+    <p>Check-ins Today</p>
+  </div>
+  <div class="counter-card">
+    <h3>R @Model.MonthlyRevenue.ToString("0.00")</h3>
+    <p>Revenue This Month</p>
+  </div>
+</div>
+
+<!-- REVENUE GRAPH WITH FILTER -->
+<div class="table-wrap mt-4" style="padding: 20px; margin-bottom: 32px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="color: var(--green); margin: 0; font-family: Georgia, serif;">Revenue Trend</h3>
+        
+        <!-- Filter Dropdown -->
+        <form method="get" asp-action="Index">
+            <select name="period" class="input" style="min-height: 36px; padding: 6px 12px; font-size: 13px;" onchange="this.form.submit()">
+                <option value="3months" selected="@(Model.SelectedPeriod == "3months")">Last 3 Months</option>
+                <option value="6months" selected="@(Model.SelectedPeriod == "6months")">Last 6 Months</option>
+                <option value="12months" selected="@(Model.SelectedPeriod == "12months")">Last 12 Months</option>
+                <option value="thisyear" selected="@(Model.SelectedPeriod == "thisyear")">This Year</option>
+            </select>
+        </form>
+    </div>
+    <canvas id="revenueChart" style="width:100%; max-height:300px;"></canvas>
+</div>
+
+<!-- RECENT BOOKINGS -->
+<div class="page-header">
+  <h2>Recent Bookings</h2>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Code</th>
+        <th>Guest</th>
+        <th>Room</th>
+        <th>Stay Date</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var b in Model.RecentBookings)
+      {
+        <tr>
+          <td><strong>@b.BookingCode</strong></td>
+          <td>@b.GuestName</td>
+          <td>@(b.Room?.RoomNumber ?? b.RoomId.ToString())</td>
+          <td>
+              @b.BookingDate.ToString("dd MMM yyyy")<br/>
+              <small style="color: #6b7280;">Booked: @GetSaTime(b.CreatedAt).ToString("HH:mm")</small>
+          </td>
+          <td><span class="status-badge status-@b.Status.ToLower()">@b.Status</span></td>
+          <td><a asp-action="Bookings" class="link">View All →</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        
+        // Pass dynamic data from C#
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartLabels));
+        const dataPoints = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ChartData));
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Revenue (R)',
+                    data: dataPoints,
+                    borderColor: '#b8942e',
+                    backgroundColor: 'rgba(184, 148, 46, 0.15)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#1e3a2f',
+                    pointBorderColor: '#b8942e',
+                    pointRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'R ' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return 'R ' + value; }
+                        },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+}

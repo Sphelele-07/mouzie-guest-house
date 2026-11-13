@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Mouzie.Data.Models.Domain.DamageRecord>
+@{
+    ViewData["Title"] = "Damage Records";
+    Layout = "_AdminLayout";
+}
+
+@functions {
+    public DateTime GetSaTime(DateTime utcTime)
+    {
+        try {
+            var saZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcTime, DateTimeKind.Utc), saZone);
+        } catch {
+            return utcTime.AddHours(2);
+        }
+    }
+}
+
+<div class="page-header">
+    <h1>Damage Records</h1>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Date Reported</th>
+                <th>Booking</th>
+                <th>Guest</th>
+                <th>Description</th>
+                <th>Severity</th>
+                <th>Amount (R)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr><td colspan="7" style="text-align:center; padding: 30px; color: #888;">No damage records found.</td></tr>
+            }
+            @foreach (var d in Model)
+            {
+                <tr>
+                    <td>@GetSaTime(d.ReportedDate).ToString("dd MMM yyyy HH:mm")</td>
+                    <td><strong>@d.BookingCode</strong></td>
+                    <td>@d.GuestName</td>
+                    <td>@d.Description</td>
+                    <td><span class="status-badge status-@d.Severity.ToLower()">@d.Severity</span></td>
+                    <td><strong>R @d.PenaltyAmount.ToString("0.00")</strong></td>
+                    <td>
+                        <a asp-action="DownloadDamageInvoice" asp-route-id="@d.DamageId" class="btn-action edit" target="_blank" title="Generate PDF and Email Guest">
+                            Send Invoice
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

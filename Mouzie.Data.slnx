@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Mouzie.Data/Mouzie.Data.csproj" />
+  <Project Path="Mouzie.UI/Mouzie.UI.csproj" />
+</Solution>

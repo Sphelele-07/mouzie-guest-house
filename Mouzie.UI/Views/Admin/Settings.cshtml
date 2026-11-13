@@ -1,0 +1,53 @@
+﻿@model Dictionary<string, string>
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header">
+  <h1>Site Settings</h1>
+</div>
+
+<form asp-action="Settings" method="post" class="form-card" style="max-width: 640px;">
+  @Html.AntiForgeryToken()
+
+  <h3 style="color: var(--green); margin-bottom: 12px;">Contact Info</h3>
+
+  <label>Business Name</label>
+  <input name="settings[BusinessName]" value="@Model.GetValueOrDefault("BusinessName", "Mouzie Guest House")" class="input" />
+
+  <label>Address</label>
+  <input name="settings[Address]" value="@Model.GetValueOrDefault("Address", "")" class="input" />
+
+  <label>WhatsApp Number</label>
+  <input name="settings[WhatsAppNumber]" value="@Model.GetValueOrDefault("WhatsAppNumber", "")" class="input" />
+
+  <label>Email</label>
+  <input name="settings[Email]" value="@Model.GetValueOrDefault("Email", "")" class="input" />
+
+  <h3 style="color: var(--green); margin: 24px 0 12px;">Check-in / Check-out</h3>
+
+  <label>Check-in Time</label>
+  <input name="settings[CheckInTime]" value="@Model.GetValueOrDefault("CheckInTime", "14:00")" class="input" />
+
+  <label>Check-out Time</label>
+  <input name="settings[CheckOutTime]" value="@Model.GetValueOrDefault("CheckOutTime", "10:00")" class="input" />
+
+  <h3 style="color: var(--green); margin: 24px 0 12px;">Banking Details (for invoices)</h3>
+
+  <label>Bank Name</label>
+  <input name="settings[BankName]" value="@Model.GetValueOrDefault("BankName", "")" class="input" />
+
+  <label>Account Holder</label>
+  <input name="settings[AccountHolder]" value="@Model.GetValueOrDefault("AccountHolder", "")" class="input" />
+
+  <label>Account Number</label>
+  <input name="settings[AccountNumber]" value="@Model.GetValueOrDefault("AccountNumber", "")" class="input" />
+
+  <label>Branch Code</label>
+  <input name="settings[BranchCode]" value="@Model.GetValueOrDefault("BranchCode", "")" class="input" />
+
+  <div style="margin-top:24px;">
+    <button type="submit" class="btn-primary">Save Settings</button>
+  </div>
+</form>

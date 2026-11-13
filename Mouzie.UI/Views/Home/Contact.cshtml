@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+    Layout = "_Layout";
+}
+
+<section class="full-page-glass">
+  <div class="glass-content-card text-center">
+    <h1 class="glass-title">Contact Us</h1>
+    
+    <div class="contact-details">
+        <p class="glass-text"><strong>Mouzie Guest House</strong><br/>Zone 13, No. 20 Langa, Cape Town</p>
+        
+        <p class="glass-text">
+            WhatsApp: <a href="https://wa.me/27821234567" class="glass-link">+27 82 123 4567</a><br/>
+            Email: <a href="mailto:ta.shoes@mouzie.co.za" class="glass-link">ta.shoes@mouzie.co.za</a>
+        </p>
+        
+        <p class="glass-text">Check-in: <strong>14:00</strong> · Check-out: <strong>10:00</strong></p>
+    </div>
+
+    <div class="mt-4">
+        <a asp-controller="Booking" asp-action="Create" class="btn-gold">Book a Room →</a>
+    </div>
+  </div>
+</section>

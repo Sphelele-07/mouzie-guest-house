@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>@ViewData["Title"] — Mouzie Guest House</title>
+  <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" asp-controller="Home" asp-action="Index">
+      <img src="~/images/Mouzie Logo.png" alt="Mouzie Guest House" class="brand-logo" />
+    </a>
+    <nav class="site-nav">
+      <a asp-controller="Home" asp-action="Index">Home</a>
+      <a asp-controller="Home" asp-action="Index" asp-fragment="rooms">Rooms</a>
+      <a asp-controller="Home" asp-action="About">About</a>
+      <a asp-controller="Home" asp-action="Facilities">Facilities</a>
+      <a asp-controller="Home" asp-action="Visit">Visit</a>
+      <a asp-controller="Home" asp-action="Contact">Contact</a>
+      <a asp-controller="Home" asp-action="Terms">Terms</a>
+      <a asp-controller="Booking" asp-action="Verify">Verify Booking</a>
+      
+      <!-- Book a Room Button (Contrast) -->
+      <a asp-controller="Booking" asp-action="Create" class="btn-gold btn-sm">Book a Room</a>
+      
+      <!-- Manager Login -->
+      <a asp-controller="Account" asp-action="Login" class="nav-admin">Manager Login</a>
+    </nav>
+  </header>
+
+  <main>
+    @RenderBody()
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <h3>Mouzie Guest House</h3>
+            <p>Zone 13, No. 20 Langa, Cape Town</p>
+            <p>Your comfort is our priority.</p>
+        </div>
+        <div class="footer-links">
+            <a asp-controller="Home" asp-action="Index">Home</a>
+            <a asp-controller="Home" asp-action="Terms">Terms & Conditions</a>
+            <a asp-controller="Booking" asp-action="Verify">Verify Booking</a>
+        </div>
+        <div class="footer-cta">
+            <a asp-controller="Booking" asp-action="Create" class="btn-gold">Book a Room</a>
+            <a asp-controller="Account" asp-action="Login" class="btn-outline-gold btn-sm">Manager Login</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © @DateTime.Now.Year Mouzie Guest House. All rights reserved.
+    </div>
+  </footer>
+
+  @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

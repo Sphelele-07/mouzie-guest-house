@@ -1,0 +1,1598 @@
+/* ════════════════════════════════════════════════════════════════════
+   MOUZIE GUEST HOUSE — GLASSMORPHISM THEME (v2.1)
+   Fixed: Dropdowns, Visit page, Form layouts.
+   ════════════════════════════════════════════════════════════════════ */
+
+
+/* ═══════════════════════ ADMIN STYLES ═══════════════════════ */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.counter-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    text-align: center;
+    border-left: 4px solid var(--gold);
+}
+
+    .counter-card h3 {
+        color: var(--green);
+        font-size: 36px;
+        margin: 0 0 4px;
+        font-family: Georgia, serif;
+    }
+
+    .counter-card p {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+.table-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow-x: auto;
+}
+
+    .table-wrap table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-wrap th {
+        text-align: left;
+        padding: 14px 16px;
+        background: #f8f9fa;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .table-wrap td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f3f5;
+        font-size: 14px;
+        vertical-align: middle;
+    }
+
+    .table-wrap tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-wrap small {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-checkedin {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-checkedout {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+.status-rejected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-available {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-occupied {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-maintenance {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.btn-action {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    margin-right: 4px;
+    transition: opacity 0.2s;
+}
+
+    .btn-action:hover {
+        opacity: 0.85;
+    }
+
+    .btn-action.approve {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .btn-action.reject {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .btn-action.checkin {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .btn-action.checkout {
+        background: #e2e3e5;
+        color: #383d41;
+    }
+
+    .btn-action.edit {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-filter {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: var(--white);
+    border: 1px solid #e5e7eb;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+    .btn-filter:hover {
+        background: #f8f9fa;
+    }
+
+    .btn-filter.active {
+        background: var(--green);
+        color: var(--white);
+        border-color: var(--green);
+    }
+
+.link {
+    color: var(--gold);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* ── MODALS ────────────────────────────────────────────────────── */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    max-width: 440px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+    .modal-content h3 {
+        color: var(--green);
+        margin: 0 0 12px;
+        font-family: Georgia, serif;
+        font-size: 20px;
+    }
+
+    .modal-content p {
+        color: var(--ink);
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-cancel {
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    color: var(--ink);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+    .btn-cancel:hover {
+        background: #d1d5db;
+    }
+
+.btn-confirm {
+    padding: 10px 18px;
+    border-radius: 999px;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+    .btn-confirm.approve {
+        background: #2e7d32;
+    }
+
+    .btn-confirm.reject {
+        background: #c0392b;
+    }
+
+    .btn-confirm.checkin {
+        background: #2980b9;
+    }
+
+    .btn-confirm.checkout {
+        background: #34495e;
+    }
+
+    .btn-confirm:hover {
+        opacity: 0.9;
+    }
+
+/* ── DESIGN TOKENS ─────────────────────────────────────────────── */
+:root {
+    --gold: #b8942e;
+    --gold-dark: #8a6d1f;
+    --gold-light: #d4af37;
+    --green: #1e3a2f;
+    --green-dark: #14261f;
+    --green-deep: #0f1a14;
+    --off-white: #fbf9f4;
+    --white: #ffffff;
+    --ink: #1f2937;
+    --muted: #a3b1aa;
+    --border-glass: rgba(255, 255, 255, 0.1);
+    --border-gold: rgba(184, 148, 46, 0.4);
+    --danger: #ff6b6b;
+    --success: #2e7d32;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-glass-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --blur: 12px;
+    --blur-lg: 16px;
+}
+
+/* ── GLOBAL RESET + BASE ───────────────────────────────────────── */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background: var(--green-deep);
+    min-height: 100%;
+}
+
+html, body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: var(--off-white);
+    line-height: 1.5;
+    min-height: 100%;
+}
+
+body {
+    background: var(--green-deep);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+    a:hover {
+        color: var(--gold-light);
+    }
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+/* ── SITE HEADER (glass) ───────────────────────────────────────── */
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    background: rgba(15, 26, 20, 0.85);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border-bottom: 1px solid var(--border-glass);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-logo {
+    height: 48px;
+    width: auto;
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+}
+
+    .site-nav a {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--off-white);
+        opacity: 0.85;
+    }
+
+        .site-nav a:hover {
+            color: var(--gold);
+            opacity: 1;
+        }
+
+.nav-admin {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: 6px;
+}
+
+/* ── SITE FOOTER ───────────────────────────────────────────────── */
+.site-footer {
+    background: var(--green-dark);
+    color: var(--muted);
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    border-top: 1px solid var(--border-glass);
+    margin-top: auto;
+}
+
+/* ── BUTTONS ───────────────────────────────────────────────────── */
+.btn-gold,
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--gold);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    min-height: 44px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+    .btn-gold:hover,
+    .btn-primary:hover {
+        background: var(--gold-light);
+        color: var(--white);
+        box-shadow: 0 0 15px rgba(184, 148, 46, 0.4);
+    }
+
+    .btn-gold:disabled,
+    .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.btn-outline-gold,
+.btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    background: transparent;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    min-height: 44px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+    .btn-outline-gold:hover,
+    .btn-outline:hover {
+        background: var(--gold);
+        color: var(--white);
+    }
+
+.btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+    min-height: 36px;
+}
+
+.btn-lg {
+    padding: 14px 28px;
+    font-size: 15px;
+    min-height: 52px;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--off-white);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+}
+
+    .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+/* ── SPINNER ───────────────────────────────────────────────────── */
+.btn-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── HERO (home page) ──────────────────────────────────────────── */
+.hero-glass {
+    padding: 100px 20px;
+    background: linear-gradient(135deg, rgba(30, 58, 47, 0.9), rgba(15, 26, 20, 0.95)), url('/images/rooms/Bedroom 1.png') center/cover;
+    position: relative;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+}
+
+.hero-glass-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.hero-text {
+    max-width: 600px;
+}
+
+.hero-logo {
+    height: 80px;
+    width: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.hero-kicker {
+    color: var(--gold);
+    letter-spacing: 3px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.hero-title {
+    font-family: Georgia, serif;
+    font-size: 56px;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.hero-tagline {
+    font-size: 20px;
+    color: #d1c9b8;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.hero-address {
+    font-size: 15px;
+    color: var(--gold);
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.hero-badge-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius-lg);
+    padding: 30px 40px;
+    text-align: center;
+}
+
+    .hero-badge-glass .badge-amount {
+        display: block;
+        font-size: 48px;
+        font-weight: 800;
+        color: var(--gold);
+        line-height: 1;
+    }
+
+    .hero-badge-glass .badge-label {
+        font-size: 14px;
+        color: var(--off-white);
+        letter-spacing: 1px;
+    }
+
+/* ── SECTIONS ──────────────────────────────────────────────────── */
+.section {
+    padding: 60px 16px;
+}
+
+.section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section-head {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+    .section-head h2 {
+        font-size: 34px;
+        color: var(--gold);
+        margin-bottom: 8px;
+        font-family: Georgia, serif;
+    }
+
+    .section-head p {
+        color: var(--muted);
+        margin-bottom: 16px;
+    }
+
+/* ── SMALLER ROOM TILES ────────────────────────────────────────── */
+.room-grid-smaller {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    max-width: 820px;
+    margin: 0 auto;
+}
+
+.room-card-premium-sm {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .room-card-premium-sm:hover {
+        transform: translateY(-5px);
+        border-color: var(--border-gold);
+        box-shadow: var(--shadow-glass-lg);
+    }
+
+.room-img-wrap-sm {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+}
+
+    .room-img-wrap-sm img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.4s ease;
+    }
+
+.room-card-premium-sm:hover .room-img-wrap-sm img {
+    transform: scale(1.05);
+}
+
+.room-content-sm {
+    padding: 18px;
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+    .room-header h3 {
+        font-size: 19px;
+        font-family: Georgia, serif;
+        color: var(--white);
+        margin: 0;
+    }
+
+.room-price-sm {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.room-content-sm p {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 14px;
+}
+
+/* ── ABOUT (home section) ──────────────────────────────────────── */
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.about-text h2 {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    color: var(--white);
+    margin-bottom: 16px;
+}
+
+.about-text p {
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.about-img-wrap {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+    .about-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+/* ── FULL-PAGE GLASS (About / Contact / Visit) ─────────────────── */
+.full-page-glass {
+    flex: 1;
+    min-height: calc(100vh - 80px - 80px);
+    padding: 60px 20px;
+    background: linear-gradient(135deg, rgba(30, 58, 47, 0.92), rgba(15, 26, 20, 0.98)), url('/images/rooms/Bedroom 1.png') center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glass-content-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass-lg);
+    border-radius: var(--radius-lg);
+    padding: 50px;
+    width: 100%;
+    max-width: 800px;
+    color: var(--off-white);
+}
+
+.text-center {
+    text-align: center;
+}
+
+.glass-title {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+.glass-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d1c9b8;
+    margin-bottom: 15px;
+}
+
+.glass-link {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+    .glass-link:hover {
+        color: var(--white);
+    }
+
+.lead {
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.mt-4 {
+    margin-top: 24px;
+}
+
+/* ── VISIT PAGE (map placeholder) ──────────────────────────────── */
+.map-glass-container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px; /* Gives it some height */
+}
+
+.map-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #d1c9b8;
+    font-size: 15px;
+    gap: 12px;
+    text-align: center;
+}
+
+/* ── BOOKING FORM (glass) ──────────────────────────────────────── */
+.booking-page {
+    flex: 1;
+    min-height: calc(100vh - 80px - 80px);
+    padding: 60px 20px;
+    background: linear-gradient(rgba(15, 26, 20, 0.85), rgba(15, 26, 20, 0.85)), url('/images/rooms/Bedroom 2.png') center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.booking-glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    width: 100%;
+    max-width: 650px;
+    color: var(--white);
+}
+
+    .booking-glass-card h1 {
+        font-family: Georgia, serif;
+        font-size: 32px;
+        color: var(--gold);
+        margin-bottom: 8px;
+    }
+
+.booking-sub {
+    color: var(--muted);
+    margin-bottom: 30px;
+}
+
+.booking-form-glass label {
+    display: block;
+    margin-top: 20px;
+    font-weight: 600;
+    color: var(--off-white);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+.input-glass {
+    width: 100%;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--white);
+    font-size: 16px;
+    margin-top: 6px;
+    transition: all 0.2s;
+}
+
+    .input-glass:focus {
+        outline: none;
+        border-color: var(--gold);
+        background: rgba(255, 255, 255, 0.12);
+    }
+
+    .input-glass::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+/* ✅ FIX: Dark dropdown for room selection */
+select.input-glass {
+    background-color: rgba(30, 58, 47, 0.95);
+    color: var(--white);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23b8942e' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+}
+
+    select.input-glass option {
+        background-color: var(--green);
+        color: var(--white);
+        padding: 10px;
+    }
+
+.date-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.date-hint {
+    font-size: 12px;
+    color: var(--gold);
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.glass-divider {
+    border: none;
+    border-top: 1px solid var(--border-glass);
+    margin: 30px 0;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0 4px;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+    .toggle-row input {
+        accent-color: var(--gold);
+    }
+
+/* ── PRICE BREAKDOWN ───────────────────────────────────────────── */
+.price-breakdown {
+    background: rgba(184, 148, 46, 0.15);
+    border: 1px solid var(--border-gold);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+    color: var(--off-white);
+}
+
+    .price-breakdown p {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px 0;
+    }
+
+    .price-breakdown strong {
+        color: var(--gold);
+    }
+
+/* ── SUCCESS PAGE ──────────────────────────────────────────────── */
+.success-glass-card {
+    text-align: center;
+}
+
+.success-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(184, 148, 46, 0.15);
+    border: 2px solid var(--border-gold);
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.success-glass-card .booking-code-box {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 24px 0;
+}
+
+    .success-glass-card .booking-code-box .code {
+        color: var(--gold);
+        font-size: 36px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        margin: 8px 0;
+        font-family: 'Courier New', monospace;
+    }
+
+    .success-glass-card .booking-code-box .hint {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+.success-details {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+    color: #d1c9b8;
+}
+
+    .success-details p {
+        margin: 6px 0;
+    }
+
+.success-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #25d366;
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    min-height: 44px;
+    transition: all 0.2s;
+}
+
+    .btn-whatsapp:hover {
+        background: #1fbe5b;
+        color: var(--white);
+        box-shadow: 0 0 15px rgba(37, 211, 102, 0.4);
+    }
+
+/* ── BANNERS ───────────────────────────────────────────────────── */
+.error-banner {
+    background: rgba(255, 107, 107, 0.2);
+    border: 1px solid var(--danger);
+    color: var(--off-white);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.success-banner {
+    background: rgba(46, 125, 50, 0.2);
+    border: 1px solid var(--success);
+    color: var(--off-white);
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.field-error {
+    display: block;
+    color: var(--danger);
+    font-size: 12px;
+    margin-top: 4px;
+    min-height: 16px;
+}
+
+/* ── AUTH PAGES (login) ────────────────────────────────────────── */
+.auth-page {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px - 80px);
+    padding: 40px 16px;
+    background: linear-gradient(135deg, rgba(30, 58, 47, 0.92), rgba(15, 26, 20, 0.98)), url('/images/rooms/Bedroom 1.png') center/cover;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
+    border: 1px solid var(--border-glass);
+    box-shadow: var(--shadow-glass-lg);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    width: 100%;
+    max-width: 440px;
+    border-top: 4px solid var(--gold);
+}
+
+.auth-title {
+    color: var(--gold);
+    font-size: 24px;
+    font-family: Georgia, serif;
+    margin-bottom: 6px;
+}
+
+.auth-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.auth-form label {
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--off-white);
+}
+
+.pw-wrap {
+    position: relative;
+}
+
+.pw-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    color: var(--muted);
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.pw-strength {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+    .pw-strength span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: var(--danger);
+        transition: all 0.2s;
+    }
+
+/* ── ADMIN (keep light theme for admin — better for long sessions) ─ */
+.admin-body {
+    background: #f4f6f8;
+    min-height: 100vh;
+    color: var(--ink);
+    display: block;
+}
+
+.admin-header {
+    background: var(--green);
+    color: var(--off-white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+}
+
+    .admin-header .brand {
+        color: var(--off-white);
+    }
+
+.admin-nav {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+    .admin-nav a {
+        color: var(--off-white);
+        font-size: 14px;
+        opacity: 0.85;
+    }
+
+        .admin-nav a:hover {
+            opacity: 1;
+            color: var(--gold);
+        }
+
+.logout-form {
+    display: inline;
+}
+
+.admin-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #f4f6f8;
+}
+
+.page-header {
+    margin-bottom: 18px;
+}
+
+    .page-header h1 {
+        color: var(--green);
+        margin: 0;
+    }
+
+.form-card {
+    background: var(--white);
+    padding: 22px;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    max-width: 520px;
+}
+
+    .form-card label {
+        display: block;
+        margin: 14px 0 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+/* Admin uses plain .input (not .input-glass) */
+.input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 16px;
+    min-height: 44px;
+    background: var(--white);
+    color: var(--ink);
+}
+
+    .input:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(184, 148, 46, 0.15);
+    }
+
+/* ── RESPONSIVE (single block, no nesting) ─────────────────────── */
+@media (max-width: 768px) {
+    .site-header {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .site-nav {
+        gap: 14px;
+        font-size: 13px;
+    }
+
+    .hero-title {
+        font-size: 40px;
+    }
+
+    .hero-badge-glass {
+        padding: 20px 30px;
+    }
+
+    .badge-amount {
+        font-size: 38px;
+    }
+
+    .date-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .glass-title {
+        font-size: 32px;
+    }
+
+    .glass-content-card {
+        padding: 30px;
+    }
+
+    .booking-glass-card {
+        padding: 30px;
+    }
+
+    .admin-header {
+        padding: 12px 16px;
+    }
+
+    .admin-main {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-header {
+        padding: 10px 12px;
+    }
+
+    .brand-logo {
+        height: 38px;
+    }
+
+    .hero-glass {
+        padding: 50px 16px;
+        min-height: auto;
+    }
+
+    .hero-title {
+        font-size: 30px;
+    }
+
+    .hero-tagline {
+        font-size: 16px;
+    }
+
+    .hero-logo {
+        height: 60px;
+    }
+
+    .section {
+        padding: 40px 16px;
+    }
+
+    .section-head h2 {
+        font-size: 26px;
+    }
+
+    .about-text h2 {
+        font-size: 26px;
+    }
+
+    .glass-title {
+        font-size: 26px;
+    }
+
+    .glass-content-card {
+        padding: 24px;
+    }
+
+    .booking-glass-card {
+        padding: 24px;
+    }
+
+    .room-grid-smaller {
+        grid-template-columns: 1fr;
+    }
+
+    .success-glass-card .booking-code-box .code {
+        font-size: 28px;
+    }
+
+    /* ── SCROLL ANCHORS & NEW SECTIONS ─────────────────────────────── */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Adjust scroll margin so sticky header doesn't overlap the section title */
+    section[id] {
+        scroll-margin-top: 90px;
+    }
+
+    /* ── NEW FOOTER LAYOUT ─────────────────────────────────────────── */
+    .site-footer {
+        background: var(--green-dark);
+        color: var(--muted);
+        padding: 40px 20px 20px;
+        font-size: 14px;
+        border-top: 1px solid var(--border-glass);
+        margin-top: auto;
+    }
+
+    .footer-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 30px;
+    }
+
+    .footer-brand h3 {
+        color: var(--gold);
+        font-family: Georgia, serif;
+        margin-bottom: 10px;
+    }
+
+    .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+        .footer-links a {
+            color: var(--muted);
+        }
+
+            .footer-links a:hover {
+                color: var(--gold);
+            }
+
+    .footer-cta {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer-bottom {
+        max-width: 1100px;
+        margin: 40px auto 0;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        text-align: center;
+        font-size: 12px;
+        color: #888;
+    }
+
+    /* ── FACILITIES PAGE TILES ─────────────────────────────────────── */
+    .facilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .facility-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+        border: 1px solid var(--border-glass);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-gold);
+        }
+
+    .facility-img-wrap {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+    }
+
+        .facility-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .facility-content {
+        padding: 20px;
+        text-align: center;
+    }
+
+        .facility-content h3 {
+            color: var(--white);
+            font-family: Georgia, serif;
+            margin-bottom: 8px;
+        }
+
+        .facility-content p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+    /* ═══════════════════════ SCROLL-DOWN CENTERING FIX ═══════════════════════ */
+    /* Force all section content to center */
+    .section-inner {
+        text-align: center;
+    }
+
+    .section-head {
+        text-align: center;
+    }
+
+        .section-head p {
+            max-width: 600px;
+            margin: 0 auto 16px;
+        }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    /* Center the room grid even if it's wide */
+    .room-grid-smaller,
+    .facilities-grid {
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Ensure glass cards are centered */
+    .glass-content-card {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
+    /* ═══════════════════════ SMALLER FACILITY TILES ═══════════════════════ */
+    .facilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 260px)); /* Fixed max width */
+        gap: 24px;
+        margin: 30px auto;
+        max-width: 600px; /* Limits the whole grid to 2 columns */
+        justify-content: center;
+    }
+
+    .facility-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(var(--blur));
+        -webkit-backdrop-filter: blur(var(--blur));
+        border: 1px solid var(--border-glass);
+        border-radius: var(--radius);
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+        .facility-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-gold);
+        }
+
+    .facility-img-wrap {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        overflow: hidden;
+    }
+
+        .facility-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .facility-content {
+        padding: 16px;
+        text-align: center;
+    }
+
+        .facility-content h3 {
+            color: var(--white);
+            font-family: Georgia, serif;
+            margin-bottom: 6px;
+            font-size: 18px;
+        }
+
+        .facility-content p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+
+    /* ═══════════════════════ VISIBLE MAP ═══════════════════════ */
+    .map-iframe-container {
+        width: 100%;
+        max-width: 800px;
+        aspect-ratio: 16 / 9;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--border-glass);
+        box-shadow: var(--shadow-glass);
+        margin: 0 auto;
+        background: #000;
+    }
+
+        .map-iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+            filter: grayscale(20%) invert(90%) hue-rotate(180deg) contrast(85%);
+            /* The filter above makes the map dark-themed to match your UI */
+        }
+
+            /* Map light fallback */
+            .map-iframe-container iframe:hover {
+                filter: none;
+                transition: filter 0.3s ease;
+            }
+}

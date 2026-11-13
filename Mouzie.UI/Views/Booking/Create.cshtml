@@ -1,0 +1,193 @@
+﻿@model Mouzie.Data.Models.ViewModels.BookingRequestVM
+@{
+    var rooms = (List<Mouzie.Data.Models.Domain.Room>)ViewData["Rooms"]!;
+    var availableDates = ViewData["AvailableDates"] as List<DateTime> ?? new List<DateTime>();
+    ViewData["Title"] = "Book a Room";
+    Layout = "_Layout";
+}
+
+<section class="booking-page">
+  <div class="booking-glass-card">
+    <h1>Book Your Stay</h1>
+    <p class="booking-sub">Select your dates and guest details below.</p>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+      <div class="error-banner" role="alert">
+        @Html.ValidationSummary(excludePropertyErrors: false)
+      </div>
+    }
+
+    <form asp-action="Create" method="post" class="booking-form-glass" novalidate>
+      @Html.AntiForgeryToken()
+
+      <!-- Room Selection -->
+      <label for="room-select">Room</label>
+      <select asp-for="RoomId" id="room-select" class="input-glass" required>
+        @foreach (var r in rooms)
+        {
+          <option value="@r.RoomId" data-price="@r.PricePerNight" selected="@(r.RoomId == Model.RoomId)">
+            Room @r.RoomNumber — @r.RoomType (R@(r.PricePerNight.ToString("0")))
+          </option>
+        }
+      </select>
+
+      <!-- CALENDAR DATES -->
+      <div class="date-grid">
+        <div>
+            <label asp-for="BookingDate">Check-in Date</label>
+            <input asp-for="BookingDate"
+                   type="date"
+                   id="checkin-date"
+                   class="input-glass"
+                   value="@(Model.BookingDate == default ? DateTime.Today.AddDays(1).ToString("yyyy-MM-dd") : Model.BookingDate.ToString("yyyy-MM-dd"))"
+                   required />
+        </div>
+        <div>
+            <label for="checkout-date">Check-out Date</label>
+            <input type="date" id="checkout-date" class="input-glass" required />
+        </div>
+      </div>
+
+      <!-- Live price calculator -->
+      <div class="price-breakdown" id="price-breakdown" style="display:none;">
+          <p><strong>Nights:</strong> <span id="total-nights">0</span></p>
+          <p><strong>Total Price:</strong> R<span id="total-price">0</span></p>
+      </div>
+      <p class="date-hint">* Rate is R600 per night. Your checkout date must be after your checkin date.</p>
+
+      <hr class="glass-divider" />
+
+      <!-- Guest Details -->
+      <label asp-for="GuestName">Full Name</label>
+      <input asp-for="GuestName" id="guest-name" class="input-glass" required minlength="2" />
+      <span asp-validation-for="GuestName" class="field-error"></span>
+
+      <label asp-for="GuestEmail">Email Address</label>
+      <input asp-for="GuestEmail" type="email" class="input-glass" required />
+      <span asp-validation-for="GuestEmail" class="field-error"></span>
+
+      <label asp-for="GuestPhone">Phone Number (10 digits)</label>
+      <input asp-for="GuestPhone" type="tel" inputmode="numeric" maxlength="10" pattern="0[0-9]{9}" class="input-glass" placeholder="0821234567" required />
+      <span asp-validation-for="GuestPhone" class="field-error"></span>
+
+      <!-- FOREIGN NATIONAL TOGGLE -->
+      <label class="toggle-row">
+        <input type="checkbox" asp-for="GuestIsForeign" id="foreign-toggle" />
+        <span>Foreign National (No SA ID)</span>
+      </label>
+
+      <label asp-for="GuestIdNumber" id="id-label">South African ID (13 digits)</label>
+      <input asp-for="GuestIdNumber" type="text" inputmode="numeric" maxlength="13" pattern="[0-9]{13}" class="input-glass" placeholder="8501015009087" required />
+      <span asp-validation-for="GuestIdNumber" class="field-error"></span>
+
+      <button type="submit" class="btn-gold btn-block mt-4">
+        <span class="btn-spinner" hidden></span>
+        Submit Booking
+      </button>
+    </form>
+  </div>
+</section>
+
+@section Scripts {
+<script>
+  const checkin = document.getElementById('checkin-date');
+  const checkout = document.getElementById('checkout-date');
+  const roomSelect = document.getElementById('room-select');
+  const priceBreakdown = document.getElementById('price-breakdown');
+  const totalNightsEl = document.getElementById('total-nights');
+  const totalPriceEl = document.getElementById('total-price');
+
+  // Set min date to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
+  checkin.min = minDate;
+
+  // ✅ Pre-fill checkout to checkin + 1 day, so it's never blank
+  function syncCheckoutMin() {
+      if (checkin.value) {
+          const nextDay = new Date(checkin.value);
+          nextDay.setDate(nextDay.getDate() + 1);
+          const minCheckout = nextDay.toISOString().split("T")[0];
+          checkout.min = minCheckout;
+
+          // If checkout is empty OR before minCheckout, set it
+          if (!checkout.value || checkout.value <= checkin.value) {
+              checkout.value = minCheckout;
+          }
+      }
+  }
+
+  function updatePrice() {
+      if (checkin.value && checkout.value) {
+          const start = new Date(checkin.value);
+          const end = new Date(checkout.value);
+          const nights = Math.round((end - start) / (1000 * 60 * 60 * 24));
+          
+          if (nights > 0) {
+              const pricePerNight = parseFloat(roomSelect.options[roomSelect.selectedIndex].dataset.price);
+              const total = nights * pricePerNight;
+              totalNightsEl.textContent = nights;
+              totalPriceEl.textContent = total.toFixed(2);
+              priceBreakdown.style.display = 'block';
+          } else {
+              priceBreakdown.style.display = 'none';
+          }
+      }
+  }
+
+  // Run on page load to pre-fill checkout
+  syncCheckoutMin();
+  updatePrice();
+
+  checkin.addEventListener('change', () => { syncCheckoutMin(); updatePrice(); });
+  checkout.addEventListener('change', updatePrice);
+  roomSelect.addEventListener('change', updatePrice);
+
+  // Foreign ID toggle
+  const toggle = document.getElementById('foreign-toggle');
+  const idLabel = document.getElementById('id-label');
+  const idInput = document.querySelector('input[name="GuestIdNumber"]');
+  toggle.addEventListener('change', () => {
+    if(toggle.checked) {
+        idLabel.textContent = 'Passport Number';
+        idInput.pattern = '[A-Za-z0-9]{6,15}';
+        idInput.maxLength = 15;
+        idInput.placeholder = 'AB123456';
+    } else {
+        idLabel.textContent = 'South African ID (13 digits)';
+        idInput.pattern = '[0-9]{13}';
+        idInput.maxLength = 13;
+        idInput.placeholder = '8501015009087';
+    }
+  });
+
+  // ✅ NEW: Auto-capitalize names on blur
+  const nameInput = document.getElementById('guest-name');
+  
+  function capitalizeName(str) {
+      if (!str) return str;
+      // Lowercase everything, then capitalize the first letter of each word
+      // Handles spaces, hyphens, and apostrophes (e.g., "o'connor" -> "O'Connor")
+      return str.toLowerCase().replace(/(?:^|\s|-|')[a-z]/g, function(match) {
+          return match.toUpperCase();
+      });
+  }
+
+  if (nameInput) {
+      nameInput.addEventListener('blur', function() {
+          this.value = capitalizeName(this.value);
+      });
+  }
+
+  // Submit spinner
+  document.querySelector('.booking-form-glass').addEventListener('submit', (e) => {
+    const sp = e.target.querySelector('.btn-spinner');
+    if (sp) {
+        sp.hidden = false;
+        e.target.querySelector('button[type="submit"]').disabled = true;
+    }
+  });
+</script>
+}

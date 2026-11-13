@@ -1,0 +1,60 @@
+﻿@model Mouzie.Data.Models.ViewModels.LoginVM
+@{
+    ViewData["Title"] = "Manager Login";
+    Layout = "_Layout";
+}
+
+<section class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Manager Login</h1>
+        <p class="auth-sub">Mouzie Guest House — admin portal</p>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="error-banner" role="alert">
+                @Html.ValidationSummary(excludePropertyErrors: true)
+            </div>
+        }
+
+        <form asp-action="Login" method="post" class="auth-form" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ReturnUrl" />
+
+            <label asp-for="Username">Email</label>
+            <input asp-for="Username" type="email" autocomplete="username"
+                   inputmode="email" required class="input" />
+            <span asp-validation-for="Username" class="field-error"></span>
+
+            <label asp-for="Password">Password</label>
+            <div class="pw-wrap">
+                <input asp-for="Password" id="pw" type="password"
+                       autocomplete="current-password" required class="input" />
+                <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Show password">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </button>
+            </div>
+            <span asp-validation-for="Password" class="field-error"></span>
+
+            <button type="submit" class="btn-primary btn-block">
+                <span class="btn-spinner" hidden></span>
+                Sign In
+            </button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function togglePw(){
+          const p = document.getElementById('pw');
+          p.type = p.type === 'password' ? 'text' : 'password';
+        }
+        document.querySelector('.auth-form')?.addEventListener('submit', e => {
+          const sp = e.target.querySelector('.btn-spinner');
+          if (sp) { sp.hidden = false; e.target.querySelector('button[type=submit]').disabled = true; }
+        });
+    </script>
+}

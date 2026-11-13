@@ -1,0 +1,95 @@
+﻿@model Mouzie.Data.Models.Domain.Booking
+@{
+    ViewData["Title"] = "Verify Booking";
+    Layout = "_Layout";
+}
+
+@functions {
+    // Helper to convert UTC time to South Africa Standard Time (SAST)
+    public DateTime GetSaTime(DateTime utcTime)
+    {
+        // If the time is already local or default, just return it
+        if (utcTime.Kind == DateTimeKind.Local && utcTime.Year < 2000) return utcTime;
+
+        try {
+            var saZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            // Ensure the time is treated as UTC before converting
+            var utc = DateTime.SpecifyKind(utcTime, DateTimeKind.Utc);
+            return TimeZoneInfo.ConvertTimeFromUtc(utc, saZone);
+        }
+        catch {
+            // Fallback if timezone fails (e.g., Linux without ICU)
+            return utcTime.AddHours(2);
+        }
+    }
+}
+
+<section class="booking-page">
+  <div class="booking-glass-card">
+    <h1>Verify Your Booking</h1>
+    <p class="booking-sub">Enter your booking code below to view your stay details.</p>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+      <div class="error-banner" role="alert">
+        @Html.ValidationSummary(excludePropertyErrors: false)
+      </div>
+    }
+
+    <!-- Verify Form -->
+    <form asp-action="Verify" method="post" class="booking-form-glass">
+      <label for="bookingCode">Booking Code (e.g., MZ-1234)</label>
+      <input type="text" name="bookingCode" id="bookingCode" class="input-glass" placeholder="MZ-XXXX" required autofocus />
+      
+      <button type="submit" class="btn-gold btn-block mt-4">
+        <span class="btn-spinner" hidden></span>
+        Look Up Booking
+      </button>
+    </form>
+
+    <!-- Results (if a booking was found) -->
+    @if (Model != null)
+    {
+        <hr class="glass-divider" />
+        
+        <div class="success-glass-card">
+            <div class="booking-code-box">
+                <p>Booking Code</p>
+                <p class="code">@Model.BookingCode</p>
+            </div>
+
+            <div class="success-details">
+                <p><strong>Status:</strong> 
+                    @if(Model.Status == "Pending") { <span style="color: #f1c40f;">Pending Review</span> }
+                    else if(Model.Status == "Approved") { <span style="color: #2ecc71;">Approved</span> }
+                    else if(Model.Status == "CheckedIn") { <span style="color: #3498db;">Checked In</span> }
+                    else if(Model.Status == "CheckedOut") { <span style="color: #95a5a6;">Checked Out</span> }
+                    else { <span style="color: #ff6b6b;">@Model.Status</span> }
+                </p>
+                <p><strong>Guest Name:</strong> @Model.GuestName</p>
+                <p><strong>Room:</strong> @(Model.Room?.RoomNumber ?? Model.RoomId.ToString())</p>
+                <p><strong>Stay Date:</strong> @Model.BookingDate.ToString("dddd, dd MMM yyyy")</p>
+                
+                <!-- Converted Time Stamps -->
+                <p><strong>Check-in Time:</strong> @(Model.CheckInTime.HasValue ? GetSaTime(Model.CheckInTime.Value).ToString("HH:mm") : "Not checked in yet")</p>
+                <p><strong>Check-out Time:</strong> @(Model.CheckOutTime.HasValue ? GetSaTime(Model.CheckOutTime.Value).ToString("HH:mm") : "Not checked out yet")</p>
+                <p><strong>Booked On:</strong> @GetSaTime(Model.CreatedAt).ToString("dd MMM yyyy HH:mm")</p>
+            </div>
+
+            <div class="success-actions mt-4">
+                <a asp-controller="Home" asp-action="Index" class="btn-outline-gold">← Back to Home</a>
+            </div>
+        </div>
+    }
+  </div>
+</section>
+
+@section Scripts {
+<script>
+  // Add spinner on submit
+  document.querySelector('.booking-form-glass').addEventListener('submit', (e) => {
+    const sp = e.target.querySelector('.btn-spinner');
+    if (sp) { sp.hidden = false; e.target.querySelector('button[type="submit"]').disabled = true; }
+  });
+</script>
+}

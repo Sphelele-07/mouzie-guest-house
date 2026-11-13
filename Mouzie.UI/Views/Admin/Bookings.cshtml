@@ -1,0 +1,201 @@
+﻿@model List<Mouzie.Data.Models.Domain.Booking>
+@{
+    ViewData["Title"] = "Bookings";
+    Layout = "_AdminLayout";
+    var currentFilter = ViewData["CurrentStatus"] as string;
+}
+
+@functions {
+    public DateTime GetSaTime(DateTime utcTime)
+    {
+        try {
+            var saZone = TimeZoneInfo.FindSystemTimeZoneById("South Africa Standard Time");
+            return TimeZoneInfo.ConvertTimeFromUtc(DateTime.SpecifyKind(utcTime, DateTimeKind.Utc), saZone);
+        } catch {
+            return utcTime.AddHours(2);
+        }
+    }
+}
+
+<div class="page-header">
+  <h1>Manage Bookings</h1>
+</div>
+
+<!-- Filters -->
+<div class="filter-bar">
+  <a asp-action="Bookings" class="btn-filter @(currentFilter == null ? "active" : "")">All</a>
+  <a asp-action="Bookings" asp-route-status="Pending" class="btn-filter @(currentFilter == "Pending" ? "active" : "")">Pending</a>
+  <a asp-action="Bookings" asp-route-status="Approved" class="btn-filter @(currentFilter == "Approved" ? "active" : "")">Approved</a>
+  <a asp-action="Bookings" asp-route-status="CheckedIn" class="btn-filter @(currentFilter == "CheckedIn" ? "active" : "")">Checked In</a>
+  <a asp-action="Bookings" asp-route-status="CheckedOut" class="btn-filter @(currentFilter == "CheckedOut" ? "active" : "")">Checked Out</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Code / Booked</th>
+        <th>Guest</th>
+        <th>Room</th>
+        <th>Stay Date & Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var b in Model)
+      {
+        <tr>
+          <td>
+              <strong>@b.BookingCode</strong><br/>
+              <small style="color:#6b7280;">@GetSaTime(b.CreatedAt).ToString("dd MMM HH:mm")</small>
+          </td>
+          <td>
+            @b.GuestName<br/>
+            <small>@b.GuestPhone</small>
+          </td>
+          <td>Room @(b.Room?.RoomNumber ?? b.RoomId.ToString())</td>
+          <td>
+              @b.BookingDate.ToString("dd MMM yyyy")<br/>
+              @if (b.CheckInTime.HasValue)
+              {
+                  <small style="color: #2e7d32;">In: @GetSaTime(b.CheckInTime.Value).ToString("HH:mm")</small>
+              }
+              @if (b.CheckOutTime.HasValue)
+              {
+                  <br/><small style="color: #c0392b;">Out: @GetSaTime(b.CheckOutTime.Value).ToString("HH:mm")</small>
+              }
+          </td>
+          <td><span class="status-badge status-@b.Status.ToLower()">@b.Status</span></td>
+          <td>
+            @if (b.Status == "Pending")
+            {
+              <button type="button" class="btn-action approve" onclick="openModal('approve-@b.BookingId')">Approve</button>
+              <button type="button" class="btn-action reject" onclick="openModal('reject-@b.BookingId')">Reject</button>
+            }
+            else if (b.Status == "Approved")
+            {
+              <button type="button" class="btn-action checkin" onclick="openModal('checkin-@b.BookingId')">Check In</button>
+            }
+            else if (b.Status == "CheckedIn")
+            {
+              <button type="button" class="btn-action checkout" onclick="openModal('checkout-@b.BookingId')">Check Out</button>
+            }
+            
+            @if (b.Status != "Pending" && b.Status != "Rejected")
+            {
+                <a asp-action="DownloadInvoice" asp-route-id="@b.BookingId" class="btn-action edit" target="_blank">Invoice</a>
+            }
+          </td>
+        </tr>
+
+        <!-- ============ MODALS ============ -->
+        
+        <!-- Approve Modal -->
+        @if (b.Status == "Pending")
+        {
+          <div id="approve-@b.BookingId" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+              <h3>Approve Booking?</h3>
+              <p>This will generate an invoice for <strong>@b.GuestName</strong> and email it to them.</p>
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('approve-@b.BookingId')">Cancel</button>
+                <form asp-action="Approve" asp-route-id="@b.BookingId" method="post" style="display:inline;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" class="btn-confirm approve">Confirm</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div id="reject-@b.BookingId" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+              <h3>Reject Booking?</h3>
+              <p>This will reject <strong>@b.GuestName</strong>'s booking. This action cannot be undone.</p>
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('reject-@b.BookingId')">Cancel</button>
+                <form asp-action="Reject" asp-route-id="@b.BookingId" method="post" style="display:inline;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" class="btn-confirm reject">Confirm Reject</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Check In Modal -->
+        @if (b.Status == "Approved")
+        {
+          <div id="checkin-@b.BookingId" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content">
+              <h3>Check In Guest?</h3>
+              <p>Mark <strong>@b.GuestName</strong> as checked in. The room will be marked as <strong>Occupied</strong>.</p>
+              <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal('checkin-@b.BookingId')">Cancel</button>
+                <form asp-action="CheckIn" asp-route-id="@b.BookingId" method="post" style="display:inline;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" class="btn-confirm checkin">Confirm Check-In</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Check Out Modal with Damage Report -->
+        @if (b.Status == "CheckedIn")
+        {
+          <div id="checkout-@b.BookingId" class="modal" role="dialog" aria-modal="true">
+            <div class="modal-content" style="max-width: 500px;">
+              <h3>Check Out Guest?</h3>
+              <p>Mark <strong>@b.GuestName</strong> as checked out. The room will become <strong>Available</strong> immediately.</p>
+              
+              <form asp-action="CheckOut" asp-route-id="@b.BookingId" method="post">
+                @Html.AntiForgeryToken()
+                
+                <label style="display:flex; align-items:center; gap:8px; margin-top:12px; font-size:14px;">
+                  <input type="checkbox" name="isEarly" value="true" /> Early Checkout?
+                </label>
+                <input type="text" name="reason" placeholder="Reason (optional)" class="input" style="margin-top:8px; width:100%;" />
+                
+                <!-- Damage Report Section -->
+                <div style="margin-top:16px; padding-top:16px; border-top:1px solid #eee;">
+                    <label style="font-weight:600; font-size:13px;">Report Damage (Optional)</label>
+                    <input type="text" name="damageDescription" placeholder="Describe the damage..." class="input" style="margin-top:8px; width:100%;" />
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <input type="number" name="damageAmount" placeholder="Amount (R)" class="input" style="width: 50%;" step="0.01" />
+                        <select name="damageSeverity" class="input" style="width: 50%;">
+                            <option value="Minor">Minor</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Severe">Severe</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                  <button type="button" class="btn-cancel" onclick="closeModal('checkout-@b.BookingId')">Cancel</button>
+                  <button type="submit" class="btn-confirm checkout">Confirm Check-Out</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        }
+      }
+    </tbody>
+  </table>
+</div>
+
+@section Scripts {
+<script>
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+      e.target.style.display = 'none';
+    }
+  });
+</script>
+}

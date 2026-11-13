@@ -1,0 +1,66 @@
+﻿@model IEnumerable<Mouzie.Data.Models.Domain.Room>
+@{
+    ViewData["Title"] = "Rooms";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+  <h1>Manage Rooms</h1>
+  <a asp-action="RoomEdit" class="btn-primary">+ Add New Room</a>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Number</th>
+        <th>Type</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Active?</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var r in Model)
+      {
+        <tr style="@(r.IsActive ? "" : "opacity: 0.5;")">
+          <td><strong>Room @r.RoomNumber</strong></td>
+          <td>@r.RoomType</td>
+          <td>R @r.PricePerNight.ToString("0.00")</td>
+          <td><span class="status-badge status-@r.Status.ToLower()">@r.Status</span></td>
+          <td>@(r.IsActive ? "Yes" : "No")</td>
+          <td>
+            <a asp-action="RoomEdit" asp-route-id="@r.RoomId" class="btn-action edit">Edit</a>
+            @if (r.IsActive)
+            {
+              <button type="button" class="btn-action reject" onclick="openModal('delete-@r.RoomId')">Delete</button>
+            }
+          </td>
+        </tr>
+
+        <div id="delete-@r.RoomId" class="modal">
+          <div class="modal-content">
+            <h3>Delete Room @r.RoomNumber?</h3>
+            <p>This will hide the room from the public site. Existing bookings are not affected.</p>
+            <div class="modal-actions">
+              <button type="button" class="btn-cancel" onclick="closeModal('delete-@r.RoomId')">Cancel</button>
+              <form asp-action="RoomDelete" asp-route-id="@r.RoomId" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-confirm reject">Delete Room</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      }
+    </tbody>
+  </table>
+</div>
+
+@section Scripts {
+<script>
+  function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  window.addEventListener('click', (e) => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; });
+</script>
+}

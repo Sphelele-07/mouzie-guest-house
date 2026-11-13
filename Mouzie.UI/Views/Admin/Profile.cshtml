@@ -1,0 +1,46 @@
+﻿@model Mouzie.Data.Models.Domain.User
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header">
+    <h1>Manager Profile</h1>
+    <p>Update your personal details and profile picture.</p>
+</div>
+
+<form asp-action="Profile" method="post" enctype="multipart/form-data" class="form-card" style="max-width: 500px;">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="UserId" />
+    <input type="hidden" asp-for="ProfileImagePath" />
+
+    <div style="text-align: center; margin-bottom: 24px;">
+        @if (!string.IsNullOrEmpty(Model.ProfileImagePath))
+        {
+            <img src="@Model.ProfileImagePath" alt="Profile" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold);" />
+        }
+        else
+        {
+            <div style="width: 100px; height: 100px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: #9ca3af; font-weight: 600;">No Photo</div>
+        }
+    </div>
+
+    <label>Profile Photo</label>
+    <input type="file" name="profileImage" class="input" accept="image/*" />
+
+    <label>First Name</label>
+    <input asp-for="FirstName" class="input" required />
+
+    <label>Last Name</label>
+    <input asp-for="LastName" class="input" required />
+
+    <label>Phone Number</label>
+    <input asp-for="Phone" class="input" />
+
+    <label>Email (cannot be changed)</label>
+    <input asp-for="Username" class="input" readonly style="background: #f3f4f6;" />
+
+    <div style="margin-top:24px;">
+        <button type="submit" class="btn-primary">Save Changes</button>
+    </div>
+</form>

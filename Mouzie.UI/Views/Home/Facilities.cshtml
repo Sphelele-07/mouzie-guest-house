@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Facilities";
+    Layout = "_Layout";
+}
+
+<section class="full-page-glass" style="align-items: flex-start; padding-top: 100px;">
+  <div class="glass-content-card" style="max-width: 900px;">
+    <h1 class="glass-title text-center">Our Facilities</h1>
+    <p class="glass-text text-center" style="max-width: 500px; margin: 0 auto 20px;">
+      We offer a range of amenities to ensure your stay is comfortable and enjoyable.
+    </p>
+    
+    <div class="facilities-grid">
+        <article class="facility-card">
+            <div class="facility-img-wrap">
+                <img src="/images/rooms/Shower.png" alt="Private Shower" />
+            </div>
+            <div class="facility-content">
+                <h3>Private Shower</h3>
+                <p>Refresh yourself in our modern, private shower facilities equipped with hot water and fresh towels.</p>
+            </div>
+        </article>
+        <article class="facility-card">
+            <div class="facility-img-wrap">
+                <img src="/images/rooms/Bathroom.png" alt="Private Bathroom" />
+            </div>
+            <div class="facility-content">
+                <h3>Private Bathroom</h3>
+                <p>Each room comes with a fully equipped en-suite bathroom including a toilet, sink, and mirror.</p>
+            </div>
+        </article>
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Booking" asp-action="Create" class="btn-gold">Book a Room →</a>
+    </div>
+  </div>
+</section>
